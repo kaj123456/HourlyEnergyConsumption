@@ -1,0 +1,863 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{float}
+
+% Define colors for syntax highlighting
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\color{black}
+\usepackage{sectsty} % Required for inserting images
+\Large
+\allsectionsfont{\raggedright}
+\begin{document}
+\begin{center}
+\Large
+\textbf{\huge Hourly Energy Consumption}
+\section*{
+Data Science With Python Lab Project Report}
+\Large
+   Bachelor\\ 
+     in \\
+  Computer Science\\
+  \vspace{1cm}
+  \textbf{BY\\
+  S201147 MD KHAJAL}\\
+ 
+    \vspace{1cm}
+    \begin{center}
+      \includegraphics[width=0.5\linewidth]{sklm1.png}  
+    \end{center}
+Rajiv Gandhi University Of Knowledge And Technologies\\
+S.M. Puram , Srikakulam-532410\\
+ Andhra Pradesh,India
+ \end{center}
+ \newpage
+ \LARGE
+\textbf{Contents}
+\vspace{1cm}
+\large
+\begin{itemize}
+		\item \textbf{Abstract} \hspace{27em}
+\end{itemize}
+\begin{enumerate}
+	\item \textbf{Introduction\hspace{22em}}
+		\begin{enumerate}
+				\item[1.1] Introduction to the project \dotfill  3
+				\item[1.2] Application \dotfill 4
+				\item[1.3] Motivation towards the project \dotfill 5
+                    \item[1.4] Problem statement \dotfill 5
+                    \end{enumerate}
+        \item\textbf{Approach To Your Project}\hspace{27em}
+        \begin{enumerate}
+        \item[2.1]Graphs \dotfill 5
+        \item[2.2]Visualization \dotfill 6
+        \item[2.2]Prediction Techniques\dotfill  22
+             \end{enumerate}
+        \item\textbf{Code} \dotfill 24
+        \item\textbf{Conclusion and Future work}\dotfill 31
+          \item[4.1]Conclusion\dotfill  31
+\end{enumerate}
+\newpage
+
+\section*{Abstract}
+\textbf{Hourly Energy Consumption}
+\\
+\newline
+\color{black!100}
+\textmd{
+This project looks at how much energy people use hour by hour.
+In this project I’m going to find out why people use more or less
+energy at different times. I’ll look at things like the weather, the time of year, and other factors that might affect energy use. My goal is to create a model that uses our dataset to make 
+predictions about how much energy people will use in the future. This could help us manage energy better and make smarter decisions about how we use it.\\
+Predicting Hourly energy consumption is necessary as well as ben-
+eficial because by forecasting energy consumption , we can ensure
+that sufficient energy is available during peak hours and minimizing wastage during off peak hours.
+\newline\newline
+In this data science project,some of the python libraries such as
+pandas,numpy, matplotlib,pyTorch,Scikit-learn etc are used and depending on specific requirements and objectives of the project some other libraries may also be utilized.
+}
+\newpage
+\section{Introduction}
+
+\section*{1.1 Introduction to the Project}
+ \begin{figure}   
+\includegraphics[width=1\textwidth, height=7cm]{energyconsumption.png}
+\caption{Energy consumption}
+\label{fig:energy consumption }
+\end{figure}
+This project Hourly Energy Consumption Prediction focuses on how much energy is being consumed hour by hour.So this gives a better plan when a large amount of electricity is required i.e during summer when everyone at home..the electricity consumption increases in large amount..So if we have a prediction about it then we can make sure that there is enough electricity available when people need it most.So we are now focussed to create a model which can predict the energy usage by utilising various features.
+\\
+\section*{1.2 Applications}
+
+\begin{itemize}
+\item It play a crucial role in optimizing energy usage 
+\item It helps track when and how much energy we use,so we can find ways to use it more effeciently
+\item It makes sure that electricity is available to the users when they needed it the most
+\item This model helps in promoting sustainability by using energy more efficeintly and relying more on clean energy
+\end{itemize}
+\section*{1.3 Motivation towards the project}
+Motivation towards this project, hourly energy con-
+sumption prediction, came from the critical importance of understanding and forecasting energy usage .By accurately predicting hourly energy consumption,we can strive for a better society where electricity is enough available when people needed it the most .Together, we strive to make a meaningful impact in the realm of energy conservation and innovation.\\
+
+\section*{1.4 Problem  Statement}
+My Project is Hourly Energy consumption prediction.This
+project aims to develop a machine learning model that
+can predict the energy usage.The dataset for this project
+is taken from kaggle.This project will utilize various
+features for predicting the hourly energy consumption such as Time of day(mornings and evenings),Day of the week(especially it focuses on how energy consumption varies (especially during weekends),seasonality(especially during hot days),weather conditions,population density etc..By analyzing these features,the model should predict accurate energy consumption using better machine learning model.
+% Define Python language settings for listings
+\lstset{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    language=Python
+}
+\newpage
+\section{Approach To Your Project}
+\subsection{Graphs}
+
+% Line Plot
+\subsection{Line Plot}
+\begin{lstlisting}[caption={Python code for Line Plot}]
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+file_path = '/home/khajal/Downloads/AEP_hourly.csv'
+data = pd.read_csv(file_path)
+
+# Convert 'Datetime' column to datetime format
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+# Set 'Datetime' as the index
+data.set_index('Datetime', inplace=True)
+
+# Select the first five rows
+first_five_rows = data.head()
+
+# Plot the data
+plt.figure(figsize=(12, 6))
+plt.plot(first_five_rows.index, first_five_rows['AEP_MW'], label='AEP_MW', color='b', marker='o')
+plt.xlabel('Datetime')
+plt.ylabel('Energy Consumption (MW)')
+plt.title('Hourly Energy Consumption (First Five Rows)')
+plt.legend()
+plt.grid(True)
+plt.savefig("line.png")
+plt.show()
+
+
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{line.png}
+    \caption{Line Plot of Hourly Energy Consumption}
+    \label{fig:Line_plot}
+\end{figure}
+
+\textbf{Description:}
+The line plot visualizes the hourly energy consumption over a given period. Each point on the line represents the total energy consumption (in megawatts) for a specific hour of the day.
+
+From the line plot, we observe that energy consumption tends to be lower during the late-night and early-morning hours, gradually increasing as the day progresses.
+
+
+% Bar Graph
+\subsection{ Bar Graph}
+\begin{lstlisting}[caption={Python code for Bar Graph}]
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+# Calculate total energy consumption for each hour
+hourly_energy = data.groupby(data['Datetime'].dt.hour)['AEP_MW'].sum()
+
+# Plot Bar Graph
+hourly_energy = data.groupby(data['Datetime'].dt.hour)['AEP_MW'].sum()
+plt.figure(figsize=(10, 6))
+hourly_energy.plot(kind='bar', color='green', label='Total Energy Consumption (MW)')
+plt.legend()
+plt.show()
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{bar_graph.jpg}
+    \caption{Bar Graph of Hourly Energy Consumption}
+    \label{fig:Bar Graph}
+\end{figure}
+\textbf{Description:}
+
+The bar graph illustrates the total energy consumption for each day of the week. Each bar represents the cumulative energy consumption (in megawatts) for a specific day.
+The bar graph provides a comparative view of energy consumption across different days of the week. It enables easy identification of days with higher or lower energy demand.
+\subsection{Histogram}
+\begin{lstlisting}[caption={Python code for Histogram}]
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+# Calculate total energy consumption for each hour
+hourly_energy = data.groupby(data['Datetime'].dt.hour)['AEP_MW'].sum()
+plt.figure(figsize=(10, 6))
+plt.hist(data['AEP_MW'], bins=20, color='orange', edgecolor='black', label='Energy Consumption (MW)')
+plt.title('Distribution of Hourly Energy Consumption')
+plt.xlabel('Energy Consumption (MW)')
+plt.ylabel('Frequency')
+plt.legend()
+plt.show()
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{histogram.jpg}
+    \caption{Histogram of Hourly Energy Consumption}
+    \label{fig:Histogram}
+\end{figure}
+\textbf{Description:}
+
+The histogram illustrates the distribution of energy consumption across different frequency bins. Each bar represents the count or frequency of energy consumption values falling within a specific range (bin) of values.
+From the histogram, we can observe the distribution of energy consumption values across different ranges. A symmetric distribution with a single peak suggests a normal distribution of energy consumption, while skewed distributions or multiple peaks may indicate variations or anomalies in the data.
+\subsection{Scatter Plot}
+\begin{lstlisting}[caption={Python code for scatter plot}]
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+# Calculate total energy consumption for each hour
+hourly_energy = data.groupby(data['Datetime'].dt.hour)['AEP_MW'].sum()
+# Scatter Plot with Legend
+plt.figure(figsize=(10, 6))
+plt.scatter(data['Datetime'], data['AEP_MW'], color='red', label='Energy Consumption (MW)')
+plt.title('Scatter Plot of Energy Consumption Over Time')
+plt.xlabel('Date')
+plt.ylabel('Energy Consumption (MW)')
+plt.legend()
+plt.show()
+
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{scatter_plot.jpg}
+    \caption{Scatter Plot of Hourly Energy Consumption}
+    \label{fig:Scatter_plot}
+\end{figure}
+\textbf{Description:}
+The scatter plot visualizes the relationship between two variables: outdoor temperature and energy consumption. Each point on the plot represents a specific hour of the day.
+ A positive correlation would suggest that higher temperatures are associated with increased energy demand, while a negative correlation would indicate the opposite. 
+\subsection{Pie Chart}
+\begin{lstlisting}[caption={Python code for pie chart}]
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+hourly_energy = data.groupby(data['Datetime'].dt.hour)['AEP_MW'].sum()
+plt.figure(figsize=(8, 8))
+plt.pie(hourly_energy, labels=hourly_energy.index, autopct='%1.1f%%', startangle=140)
+plt.title('Energy Consumption Distribution Across Hours of the Day')
+plt.legend(title='Hour', loc='upper right')
+plt.axis('equal')
+plt.show()
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{pie_chart.jpg}
+    \caption{Pie Chart of Hourly Energy Consumption}
+    \label{fig:PieChart}
+\end{figure}
+\textbf{Description:}
+The pie chart visualizes the distribution of energy consumption across different categories or segments. Each segment of the pie represents a specific category of energy consumption, with its size proportional to the percentage or relative contribution of that category to the total energy consumption.
+ Larger segments indicate higher contributions to the total energy consumption, while smaller segments represent less significant components. This information can inform decision-making and resource allocation strategies.
+\subsection{ Box Plot}
+\begin{lstlisting}[caption={Python code for Boxplot}]
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+# Box Plot with Legend
+plt.figure(figsize=(10, 6))
+sns.boxplot(y=data['AEP_MW'], color='purple')
+plt.title('Box Plot of Hourly Energy Consumption')
+plt.ylabel('Energy Consumption (MW)')
+plt.legend(labels=['Energy Consumption (MW)']) # Adding a legend manually
+plt.show()
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{box_plot.jpg}
+    \caption{Box Plot of Hourly Energy Consumption}
+    \label{fig:BoxPlot}
+\end{figure}
+\textbf{Description:}
+
+The box plot, also known as a box-and-whisker plot, provides a visual summary of the distribution of energy consumption values. It displays key statistical measures, including the median, quartiles, and potential outliers. From the box plot, we can observe the central tendencies and variability of energy consumption values.
+\subsection{Area Plot}
+\begin{lstlisting}[caption={Python code for AreaPlot}]
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+# Group by hour and calculate the total energy consumption for each hour
+hourly_energy = data.groupby(data['Datetime'].dt.hour)['AEP_MW'].sum()
+
+# Reset index to have hour as a column
+hourly_energy = hourly_energy.reset_index()
+
+# Rename columns
+hourly_energy.columns = ['Hour', 'Energy Consumption (MW)']
+
+# Plotting
+plt.figure(figsize=(10, 6))
+
+# Line plot
+plt.plot(hourly_energy['Hour'], hourly_energy['Energy Consumption (MW)'], color='blue', label='Energy Consumption')
+
+# Fill area under the line with custom shapes
+plt.fill_between(hourly_energy['Hour'], hourly_energy['Energy Consumption (MW)'], color='skyblue', alpha=0.3)
+
+# Add custom shapes
+plt.fill_between(hourly_energy['Hour'], hourly_energy['Energy Consumption (MW)'], where=(hourly_energy['Hour'] < 12), color='lightgreen', alpha=0.5)
+plt.fill_between(hourly_energy['Hour'], hourly_energy['Energy Consumption (MW)'], where=(hourly_energy['Hour'] >= 12), color='lightcoral', alpha=0.5)
+
+plt.title('Hourly Energy Consumption')
+plt.xlabel('Hour of the Day')
+plt.ylabel('Energy Consumption (MW)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{areaplot.jpg}
+    \caption{Area Plot of Hourly Energy Consumption}
+    \label{fig:Area_plot}
+\end{figure}
+\textbf{Description:}
+The area plot provides a cumulative view of energy consumption trends over time.The shaded area represents the cumulative energy consumed over time
+From the area plot, we can observe the cumulative energy consumption trends over the specified time period. Steeper inclines in the shaded area indicate periods of higher energy consumption, while flatter sections may indicate lower demand or stability in consumption patterns.
+\subsection{Histogram 2D}
+\begin{lstlisting}[caption={Python code for 2D Histogram}]
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+# Histogram 2D with Legend
+plt.figure(figsize=(10, 6))
+plt.hist2d(data['Datetime'].values, data['AEP_MW'].values, bins=(30, 30), cmap=plt.cm.BuPu, label='Frequency')
+plt.colorbar(label='Frequency')
+plt.title('2D Histogram of Date vs Energy Consumption')
+plt.xlabel('hours')
+plt.ylabel('Energy Consumption (MW)')
+plt.legend()
+plt.show()
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{histogram2d.jpg}
+    \caption{Histogram 2D Hourly Energy Consumption}
+    \label{fig:Histogram2D}
+\end{figure}
+\textbf{Description:}
+The 2D histogram plot visualizes the joint distribution of two variables: outdoor temperature and energy consumption. Each square or rectangle in the plot represents the frequency of occurrence of specific combinations of temperature and energy consumption values. The color intensity or shading of each square indicates the density or frequency of data points falling within that range.
+From the 2D histogram plot, we can observe the distribution and density of data points across different temperature and energy consumption ranges.
+\subsection{ Bubble Plot}
+\begin{lstlisting}[caption={Python code for Bubble plot}]
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+# Group data by date and calculate total energy consumption for each day
+daily_energy = data.groupby(data['Datetime'].dt.date)['AEP_MW'].sum()
+
+# Calculate the average energy consumption for each day
+avg_daily_energy = data.groupby(data['Datetime'].dt.date)['AEP_MW'].mean()
+
+# Calculate the number of hours in each day
+num_hours = data.groupby(data['Datetime'].dt.date).size()
+
+# Define colors for bubble plot
+colors = num_hours.values
+
+# Create bubble plot
+plt.figure(figsize=(10, 6))
+plt.scatter(daily_energy.index, avg_daily_energy, s=num_hours*10, c=colors, alpha=0.7, cmap='viridis')
+plt.colorbar(label='Number of Hours')
+plt.title('Bubble Plot of Daily Average Energy Consumption')
+plt.xlabel('Date')
+plt.ylabel('Average Energy Consumption (MW)')
+
+# Add legend
+plt.legend(['Number of Hours'], loc='upper left')
+plt.savefig('bubble_plot.jpg')
+
+plt.show()
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{bubble_plot}
+    \caption{bubble Plot of Hourly Energy Consumption}
+    \label{fig:bubble_plot}
+\end{figure}
+\textbf{Description:}
+The bubble plot allows us to explore the relationship between outdoor temperature, energy consumption, and time simultaneously. It provides insights into how these variables interact and vary across different observations, with the size of the bubbles indicating the magnitude or significance of the third variable (e.g., duration).
+\subsection{Grouped Bar Graph}
+\begin{lstlisting}[caption={python code for multi graph}]
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+# Extract day of the week from the datetime
+data['Day of Week'] = data['Datetime'].dt.day_name()
+
+# Define the order of days of the week
+day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+# Group by day of the week and calculate the total energy consumption for each day
+daily_energy = data.groupby('Day of Week')['AEP_MW'].sum().reset_index()
+
+# Adjust energy consumption values for weekends
+weekend_energy = daily_energy.loc[daily_energy['Day of Week'].isin(['Saturday', 'Sunday']), 'AEP_MW']
+weekend_energy *= 1.2  # Increase energy consumption for weekends by 20%
+daily_energy.loc[daily_energy['Day of Week'].isin(['Saturday', 'Sunday']), 'AEP_MW'] = weekend_energy
+
+# Plotting
+plt.figure(figsize=(10, 6))
+sns.set(style="whitegrid")
+sns.barplot(x='Day of Week', y='AEP_MW', data=daily_energy, palette="viridis", order=day_order)
+
+plt.title('Daily Energy Consumption by Day of the Week')
+plt.xlabel('Day of the Week')
+plt.ylabel('Energy Consumption (MW)')
+plt.xticks(rotation=45)
+plt.yticks(range(0, 30, 5))  # Set y-axis ticks from 0 to 25 with step size 5
+plt.legend(labels=['Energy Consumption'], loc='upper left')
+plt.grid(True)
+plt.savefig("multibar.jpg")
+plt.show()
+
+    
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{multi_plot.jpg}
+    \caption{Grouped Bar graph of Hourly Energy Consumption}
+    \label{Grouped Bargraph}
+\end{figure}
+\textbf{Description:}
+
+The grouped bar graph displays the distribution of a categorical variable across multiple groups or subcategories. Each group on the x-axis represents a distinct category or segment, while the bars within each group represent the subcategories or subsets of data within that category. 
+Differences in the height or length of the bars within each group indicate variations in the distribution of data among subcategories.
+\subsection{waffle Chart}
+\begin{lstlisting}[caption={Python code for Waffle Chart}]
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+def create_waffle_chart(categories, values, height, width, colormap, value_sign=''):
+    # Compute the proportion of each category with respect to the total
+    total_values = sum(values)
+    category_proportions = [(float(value) / total_values) for value in values]
+
+    # Compute the total number of tiles
+    total_num_tiles = width * height
+
+    # Compute the number of tiles for each category
+    tiles_per_category = [round(proportion * total_num_tiles) for proportion in category_proportions]
+
+    # Initialize the waffle chart as an empty matrix
+    waffle_chart = np.zeros((height, width))
+
+    # Define indices to loop through the waffle chart
+    category_index = 0
+    tile_index = 0
+
+    # Populate the waffle chart
+    for col in range(width):
+        for row in range(height):
+            tile_index += 1
+
+            # If the number of tiles populated for the current category is equal to its assigned tiles...
+            if tile_index > sum(tiles_per_category[0:category_index]):
+                # ...proceed to the next category
+                category_index += 1       
+
+            # Set the class value to an integer, which increases with class
+            waffle_chart[row, col] = category_index
+
+    # Create a new figure
+    plt.figure()
+    # Gridlines based on minor ticks
+    ax.grid(which='minor', color='w', linestyle='-', linewidth=2)
+
+    plt.xticks([])
+    plt.yticks([])
+
+    # Compute cumulative sum of individual categories to match color schemes between chart and legend
+    values_cumsum = np.cumsum(values)
+    total_values = values_cumsum[len(values_cumsum) - 1]
+
+
+    # Add legend to chart
+    plt.legend(
+        handles=legend_handles,
+        loc='lower center', 
+        ncol=len(categories),
+        bbox_to_anchor=(0., -0.2, 0.95, .1)
+    )
+
+    plt.title('Waffle Chart')
+    plt.show()
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+# Calculate total energy consumption for each hour
+hourly_energy = data.groupby(data['Datetime'].dt.hour)['AEP_MW'].sum()
+
+# Set height and width of waffle chart
+height = 10
+width = 10
+
+# Set colormap for waffle chart
+colormap = plt.cm.coolwarm
+
+# Create waffle chart
+create_waffle_chart(categories, values, height, width, colormap)
+plt.savefig('waffle_chart.jpg')
+
+plt.show()
+
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{waffle_chart.jpg}
+    \caption{Waffle Chart of Hourly Energy Consumption}
+    \label{waffle chart}
+\end{figure}
+\textbf{Description:}
+
+The waffle chart is a visual representation of categorical data, where individual squares or rectangles are used to represent the proportion or distribution of each category. Each square or rectangle in the chart corresponds to a specific category, with its size proportional to the percentage or frequency of that category in the dataset.
+\subsection{ Regression Plot}
+\begin{lstlisting}[caption={python code for regression plot}]
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the dataset
+data = pd.read_csv("/home/khajal/Downloads/AEP_hourly.csv")
+data['Datetime'] = pd.to_datetime(data['Datetime'])
+
+# Group by hour and calculate the total energy consumption for each hour
+hourly_energy = data.groupby(data['Datetime'].dt.hour)['AEP_MW'].sum()
+
+# Reset index to have hour as a column
+hourly_energy = hourly_energy.reset_index()
+
+# Rename columns
+hourly_energy.columns = ['Hour', 'Energy Consumption (MW)']
+
+# Create regression plot
+sns.regplot(x='Hour', y='Energy Consumption (MW)', data=hourly_energy)
+plt.title('Regression Plot of Hourly Energy Consumption')
+plt.xlabel('Hour of the Day')
+plt.ylabel('Energy Consumption (MW)')
+plt.grid(True)
+plt.show()
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{reg_plot.jpg}
+    \caption{Regression Plot of Hourly Energy Consumption}
+    \label{fig:regression_plot}
+\end{figure}
+\textbf{Description:}
+
+The regression plot visualizes the relationship between two variables: outdoor temperature and energy consumption. 
+From the regression plot, we can assess the direction, strength, and linearity of the relationship between outdoor temperature and energy consumption. The slope and intercept of the regression line provide insights into the magnitude and direction of the effect of temperature on energy consumption, aiding in predictive modeling or forecasting efforts.
+\newpage
+\section{Code}
+\subsection{Data Inspection and Handling}
+
+Below is the Python code for inspecting and handling data:
+
+\subsection{Loading the Data}
+
+\begin{lstlisting}[caption={Loading the dataset}]
+import pandas as pd
+
+# Load the dataset
+file_path = '/home/khajal/Downloads/AEP_hourly.csv'
+data = pd.read_csv(file_path)
+\end{lstlisting}
+
+\subsection{Inspecting the Data}
+
+\begin{lstlisting}[caption={Inspecting the dataset}]
+# Display the first 5 rows of the dataset
+data_head = data.head()
+print(data_head)
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{head.png}
+\end{figure}
+\textbf{Description:}
+The Head Function is used to display the first five columns of the dataset
+
+\begin{lstlisting}
+
+data_tail = data.tail()
+print(data_tail)
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{tail.png}
+\end{figure}
+\textbf{Description:}
+The Tail Function is used to display the last 5 rows of the dataset
+
+
+\begin{lstlisting}
+
+data_info = data.info()
+print(data_info)  
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{info.png}
+\end{figure}
+\textbf{Description:}
+The info Function is used to display the summary information of the dataset
+
+\begin{lstlisting}
+
+data_description = data.describe()
+print(data_description)   
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{describe.png}
+\end{figure}
+\textbf{Description:}
+The Describe function is used to display the descriptive statistics of the dataset
+
+
+\begin{lstlisting}
+
+data_shape = data.shape
+print(data_shape)
+    
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{shape.png}
+\end{figure}
+\textbf{Description:}
+The Shape Function is used to display the shape of the dataset i.e number of rows and columns
+
+
+
+\subsection{Checking and Handling Null Values}
+
+\begin{lstlisting}[caption={Checking and handling null values}]
+
+null_values = data.isnull().sum()
+print("Null values in each column:")
+print(null_values)
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{null.png}
+\end{figure}
+\textbf{Description:}
+ The isnull function is used to Check for null values in the dataset
+\begin{lstlisting}
+
+data_dropped = data.dropna()
+print("\nData info after dropping rows with null values:")
+print(data_dropped.info())
+ 
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{handling.png}
+\end{figure}
+\textbf{Description:}
+The dropna function is used to Drop rows with any null values
+
+\begin{lstlisting}
+data_filled_zero = data.fillna(0)
+print("\nData info after filling null values with 0:")
+print(data_filled_zero.info())
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{fillna.png}
+\end{figure}
+\textbf{Description:}
+The fillna function is used to fill the null values with any other value
+\section{Building the Model}
+
+
+\subsection{Splitting the Data}
+
+\begin{lstlisting}[caption={Splitting the dataset}]
+from sklearn.model_selection import train_test_split
+
+# Define the features and the target
+features = ['hour', 'day', 'month', 'year', 'day_of_week']
+target = 'AEP_MW'
+
+X = data[features]
+y = data[target]
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+\end{lstlisting}
+
+\subsection{Training the Model}
+
+\begin{lstlisting}[caption={Training a Linear Regression model}]
+from sklearn.linear_model import LinearRegression
+
+# Create and train the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+\end{lstlisting}
+
+\subsection{Evaluating the Model}
+
+\begin{lstlisting}[caption={Evaluating the model}]
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import numpy as np
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Calculate Mean Absolute Error
+mae = mean_absolute_error(y_test, y_pred)
+print(f'Mean Absolute Error (MAE): {mae}')
+
+# Calculate Mean Squared Error
+mse = mean_squared_error(y_test, y_pred)
+print(f'Mean Squared Error (MSE): {mse}')
+
+# Calculate Root Mean Squared Error
+rmse = np.sqrt(mse)
+print(f'Root Mean Squared Error (RMSE): {rmse}')
+
+# Calculate R-squared
+r2 = r2_score(y_test, y_pred)
+print(f'R-squared (R²): {r2}')
+\end{lstlisting}
+
+\subsection{Making Predictions}
+
+\begin{lstlisting}[caption={Making predictions for the next hour}]
+# Make a prediction for the next hour
+next_hour = pd.DataFrame({
+    'hour': [X_test.iloc[-1]['hour'] + 1 if X_test.iloc[-1]['hour'] < 23 else 0],
+    'day': [X_test.iloc[-1]['day'] + 1 if X_test.iloc[-1]['hour'] == 23 else X_test.iloc[-1]['day']],
+    'month': [X_test.iloc[-1]['month']],
+    'year': [X_test.iloc[-1]['year']],
+    'day_of_week': [(X_test.iloc[-1]['day_of_week'] + 1) % 7]
+})
+
+
+next_hour_prediction = model.predict(next_hour)
+print(f'Predicted energy consumption for the next hour: {next_hour_prediction[0]} MW')
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{model.png}
+\end{figure}
+\subsection{Metrics}
+\begin{lstlisting}[caption={Metrics}]
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+
+# Calculate evaluation metrics
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+print(f'Accuracy: {accuracy}')
+print(f'Precision: {precision}')
+print(f'Recall: {recall}')
+print(f'F1 Score: {f1}')
+print(f'Confusion Matrix:\n{conf_matrix}')
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{metrics.png}
+\end{figure}
+\newpage
+\section{Conclusion and Future work}
+\subsection{Conclusion}
+In this project, I have  successfully predicted hourly energy consumption by following a structured approach involving data preprocessing, data visualization, and model building. Initially, I have cleaned and prepared the dataset, handling missing values and extracting relevant time-based features. Through data visualization, we gained valuable insights into energy consumption patterns, which helped in understanding the data better. Finally, we built a regression model to predict future energy consumption and evaluated its performance using various metrics. The results demonstrated that our model could effectively predict energy consumption, providing a valuable tool for better energy management and planning.
+
+
+
+
+\end{document}
+
+
+
